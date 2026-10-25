@@ -1,0 +1,19 @@
+---
+description: ReturnDesk product rules. Follow docs/PRD.md for every change.
+alwaysApply: true
+---
+
+# ReturnDesk
+
+- Follow `docs/PRD.md` as the source of truth. If an installed skill conflicts with the PRD, the PRD wins.
+- Stack: Next.js App Router, TypeScript, Tailwind, PostgreSQL, Drizzle, Zod. Route handlers run on the Node.js runtime.
+- Enforce every business rule on the server and with database constraints. The UI may hide illegal actions; it is not the enforcement layer.
+- Never replace persistent PostgreSQL data with in-memory arrays, JSON files, or browser storage.
+- Keep route handlers thin. Put validation, business rules, data access, and error mapping in shared server modules.
+- Use transactions and row locks when an operation depends on current status. Keep those transactions short.
+- Money is PostgreSQL `NUMERIC`, never a float. Request references come from a sequence, never from counting rows.
+- Run relevant tests after each phase. Do not claim a feature is complete without command output.
+- Stay inside the current phase. Do not refactor unrelated code or add out-of-scope features (auth, email, payments, inventory).
+- Do not commit secrets. `.env` stays untracked; `.env.example` lists every variable.
+- Stop and report if an acceptance criterion cannot be met.
+- Use installed skills only when the task matches them.
