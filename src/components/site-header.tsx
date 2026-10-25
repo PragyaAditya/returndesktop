@@ -7,7 +7,14 @@ export function SiteHeader() {
         <Link href="/" className="font-display text-2xl tracking-tight text-foreground">
           ReturnDesk
         </Link>
-        <p className="text-sm text-muted">Returns desk</p>
+        <nav className="flex items-center gap-4 text-sm">
+          <Link href="/" className="text-muted">
+            Queue
+          </Link>
+          <Link href="/requests/new" className="bg-stamp px-3 py-2 text-card">
+            New request
+          </Link>
+        </nav>
       </div>
     </header>
   );

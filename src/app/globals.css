@@ -7,6 +7,7 @@
   --line: #c5d4da;
   --stamp: #0f6e6b;
   --muted: #4d6570;
+  --danger: #8c3a2f;
 }
 
 @theme inline {
@@ -16,6 +17,7 @@
   --color-line: var(--line);
   --color-stamp: var(--stamp);
   --color-muted: var(--muted);
+  --color-danger: var(--danger);
   --font-sans: var(--font-source-sans), "Source Sans 3", sans-serif;
   --font-display: var(--font-fraunces), Georgia, serif;
 }
@@ -29,4 +31,18 @@ body {
 :focus-visible {
   outline: 2px solid var(--stamp);
   outline-offset: 3px;
+}
+
+dialog {
+  margin: auto;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--foreground);
+  padding: 1.25rem;
+  max-width: 28rem;
+  width: calc(100% - 2rem);
+}
+
+dialog::backdrop {
+  background: rgb(16 42 54 / 0.45);
 }
