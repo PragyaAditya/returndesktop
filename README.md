@@ -52,6 +52,16 @@ npm run db:seed
 npm run build
 ```
 
+## API
+
+Errors use `{ "error": { "code", "message", "details" } }`.
+
+- `POST /api/requests` creates an `Open` request. The server sets the id, reference, timestamps, and status. A second live request for the same order reference and SKU returns `409` `DUPLICATE_LIVE_REQUEST`.
+- `GET /api/requests` searches `q` across customer name, email, order reference, and request reference. Optional `status` and `reason`. `sort` is one of `createdAt`, `updatedAt`, `reference`, `customerName`, `status`, `reason`, `orderReference`. `direction` is `asc` or `desc`. `page` and `pageSize` (max 100) paginate in PostgreSQL and return `total`.
+- `GET /api/requests/:id` returns one active request and its notes.
+
+Malformed JSON is `400`. Invalid fields or query parameters are `422`. Missing requests are `404`.
+
 ## Decisions so far
 
 - Next.js App Router, TypeScript, and Tailwind, started from the standard app template rather than an admin kit.

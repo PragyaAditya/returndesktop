@@ -15,3 +15,8 @@ export function getDb() {
 
   return drizzle(globalForDb.returnDeskPool, { schema });
 }
+
+export async function closeDb() {
+  await globalForDb.returnDeskPool?.end();
+  globalForDb.returnDeskPool = undefined;
+}
