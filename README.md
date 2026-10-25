@@ -4,7 +4,7 @@ ReturnDesk is a returns desk for a small online store. An agent creates a reques
 
 ## Public URLs
 
-There is no public deployment and no GitHub remote. `git remote -v` is empty. Vercel has no stored credentials here, and the Neon CLI is not installed, so production was not provisioned. The exact order for a later deploy is in [docs/deployment.md](docs/deployment.md). Deployment is unverified.
+The production desk is [https://returndesk-amber.vercel.app](https://returndesk-amber.vercel.app). There is still no GitHub remote. `git remote -v` is empty. Provisioning details are in [docs/deployment.md](docs/deployment.md).
 
 ## Architecture
 
@@ -95,7 +95,9 @@ On the last local run before this README: lint, typecheck, and `npm run build` s
 
 ## Production
 
-Follow [docs/deployment.md](docs/deployment.md). Do not treat this repository as deployed.
+The app is deployed on Vercel as project `returndesk` under `praveen-singh01s-projects`, on Node.js 22.x. PostgreSQL is Neon project `returndesk` (`plain-butterfly-01756038`) in `aws-ap-southeast-1`. `DATABASE_URL` is the pooled host and `DATABASE_URL_UNPOOLED` is the direct host. Both are stored as Vercel production secrets and are not in git.
+
+After migrate and seed, `GET /api/health` returned `{"ok":true}`. A created request received reference `RD-2026-000033`. A second production deploy left that same request in place, and the queue total was 32 (31 visible seeded rows plus that request). SSO deployment protection was turned off so the public URL opens without a Vercel login.
 
 ## Decisions
 
@@ -106,7 +108,7 @@ Follow [docs/deployment.md](docs/deployment.md). Do not treat this repository as
 
 ## Limitations
 
-- No public URL. A reviewer cannot click through a hosted desk yet.
+- The public site is live. There is no GitHub repository URL to publish beside it.
 - No authentication, email, charts, inventory, or refund processing. Those are out of scope.
 - The transition graph and locked customer fields are enforced in the server transaction, not by a Postgres trigger. A direct SQL client can still change those columns.
 - Hours were not tracked, so this README does not estimate them.

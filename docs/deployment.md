@@ -1,6 +1,12 @@
 # Production deployment
 
-Deployment is **unverified**. This environment has a local PostgreSQL database only. The Vercel CLI has no credentials (`vercel whoami` reports no existing credentials), and the Neon CLI is not installed. No production project was created, no migration was run against Neon, and there is no public URL.
+Production is live at [https://returndesk-amber.vercel.app](https://returndesk-amber.vercel.app).
+
+Neon project `returndesk` (`plain-butterfly-01756038`) is in organization `praveen` (`org-falling-waterfall-81984480`), region `aws-ap-southeast-1`, database `returndesk`, Postgres 16. Vercel project `returndesk` is on team `praveen-singh01s-projects`, Node.js 22.x, framework Next.js. Production environment variables `DATABASE_URL` (pooled host) and `DATABASE_URL_UNPOOLED` (direct host) are secret values in Vercel. They are not committed.
+
+Verified on 25 October 2026: migrations applied, seed loaded 32 requests, `GET /api/health` returned `{"ok":true}`, `POST /api/requests` created `RD-2026-000033`, and that row was still returned by `GET /api/requests/6616f766-4eb2-4cda-aba0-58df653f4752` after a second production deployment. The queue total was 32. SSO protection was disabled so the `vercel.app` URL is public.
+
+There is no GitHub remote, so Vercel is not connected to a Git repository. Later deploys are `npx vercel@latest deploy --prod --yes --scope praveen-singh01s-projects` from this directory.
 
 ## What production must use
 
@@ -35,11 +41,11 @@ Deployment is **unverified**. This environment has a local PostgreSQL database o
 8. Check the database through the health route. A live database returns `{"ok":true}`. A failure returns `500` with `{ "error": { "code": "INTERNAL_ERROR", "message": "Unexpected server error.", "details": null } }` and does not include the connection string.
 
    ```bash
-   curl -sS "https://YOUR_DEPLOYMENT/api/health"
+   curl -sS "https://returndesk-amber.vercel.app/api/health"
    ```
 
 9. Create one request in the deployed UI, or with `POST /api/requests`.
 10. Redeploy or restart the Vercel deployment.
 11. Open that request again, or `GET /api/requests/:id`, and confirm the same reference is still there.
 
-Replace `YOUR_DEPLOYMENT` with the hostname Vercel prints. Do not invent it. Do not point `db:migrate` or `db:seed` at the pooler host.
+Do not point `db:migrate` or `db:seed` at the pooler host. The numbered steps above are the procedure already used for this project.
