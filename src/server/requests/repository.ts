@@ -10,6 +10,9 @@ import {
 } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { requestNotes, returnRequests, type RequestNote, type ReturnRequest } from "@/lib/db/schema";
+
+type Database = ReturnType<typeof getDb>;
+type RequestTransaction = Parameters<Parameters<Database["transaction"]>[0]>[0];
 import type { ListQuery } from "@/lib/validation/requests";
 
 const sortColumns = {
@@ -121,6 +124,26 @@ function postgresError(error: unknown): { code?: string; constraint?: string } |
   }
 
   return null;
+}
+
+export async function withLockedRequest<T>(
+  id: string,
+  run: (current: ReturnRequest, tx: RequestTransaction) => Promise<T>,
+): Promise<T | "missing"> {
+  return getDb().transaction(async (tx) => {
+    const [current] = await tx
+      .select()
+      .from(returnRequests)
+      .where(eq(returnRequests.id, id))
+      .limit(1)
+      .for("update");
+
+    if (!current || current.removedAt) {
+      return "missing" as const;
+    }
+
+    return run(current, tx);
+  });
 }
 
 export function isLiveRequestConflict(error: unknown) {
