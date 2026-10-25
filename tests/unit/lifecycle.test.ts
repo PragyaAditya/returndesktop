@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   REQUEST_STATUSES,
   decideApproval,
+  detailEditBlock,
   illegalTransitionMessage,
+  removalBlock,
 } from "@/server/requests/lifecycle";
 
 describe("lifecycle", () => {
@@ -37,5 +39,18 @@ describe("lifecycle", () => {
     });
     expect(decideApproval({ resolution: "Store Credit", refundAmount: "5.00" }).ok).toBe(false);
     expect(decideApproval({}).ok).toBe(false);
+  });
+
+  it("allows detail edits only while open or in review, and removal only while open or rejected", () => {
+    expect(detailEditBlock("Open")).toBeNull();
+    expect(detailEditBlock("In Review")).toBeNull();
+    expect(detailEditBlock("Approved")).toMatch(/Approved/);
+    expect(detailEditBlock("Rejected")).toMatch(/Rejected/);
+    expect(detailEditBlock("Completed")).toMatch(/Completed/);
+    expect(removalBlock("Open")).toBeNull();
+    expect(removalBlock("Rejected")).toBeNull();
+    expect(removalBlock("In Review")).toMatch(/In Review/);
+    expect(removalBlock("Approved")).toMatch(/Approved/);
+    expect(removalBlock("Completed")).toMatch(/Completed/);
   });
 });

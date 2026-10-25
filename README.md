@@ -60,6 +60,9 @@ Errors use `{ "error": { "code", "message", "details" } }`.
 - `GET /api/requests` searches `q` across customer name, email, order reference, and request reference. Optional `status` and `reason`. `sort` is one of `createdAt`, `updatedAt`, `reference`, `customerName`, `status`, `reason`, `orderReference`. `direction` is `asc` or `desc`. `page` and `pageSize` (max 100) paginate in PostgreSQL and return `total`.
 - `GET /api/requests/:id` returns one active request and its notes.
 - `POST /api/requests/:id/transition` moves a request through `Open → In Review → Approved|Rejected`, then `Approved → Completed`. Approval requires `Refund` with a positive amount, or `Replacement` / `Store Credit` with no amount. Illegal transitions are `409`. Invalid resolutions are `422`.
+- `PATCH /api/requests/:id` edits customer and item details only while the request is `Open` or `In Review`. Locked requests return `409` `LOCKED_DETAILS`. Status, resolution, reference, and timestamps are not editable here.
+- `POST /api/requests/:id/notes` appends a note on any request that has not been removed.
+- `POST /api/requests/:id/remove` soft-removes an `Open` or `Rejected` request and returns `204`. Removed requests stay in PostgreSQL and disappear from normal reads.
 
 Malformed JSON is `400`. Invalid fields or query parameters are `422`. Missing requests are `404`.
 

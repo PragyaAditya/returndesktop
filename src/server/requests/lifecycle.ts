@@ -10,6 +10,22 @@ const transitions: Record<RequestStatus, readonly RequestStatus[]> = {
   Completed: [],
 };
 
+export function detailEditBlock(status: RequestStatus) {
+  if (status === "Open" || status === "In Review") {
+    return null;
+  }
+
+  return `Customer and item details cannot be edited while the request is ${status}.`;
+}
+
+export function removalBlock(status: RequestStatus) {
+  if (status === "Open" || status === "Rejected") {
+    return null;
+  }
+
+  return `A ${status} request cannot be removed.`;
+}
+
 export function allowedTransitions(status: RequestStatus) {
   return transitions[status];
 }
